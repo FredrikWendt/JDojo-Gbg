@@ -2,9 +2,9 @@
 <project>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>se.jdojo.gbg</groupId>
-	<artifactId>kata-java-ee-1</artifactId>
+	<artifactId>kata-web-auth-1</artifactId>
 	<packaging>war</packaging>
-	<name>Java EE Kata 1</name>
+	<name>Kata Java EE Web Auth 1</name>
 	<version>0.0.1-SNAPSHOT</version>
 	<dependencies>
 		<dependency>
