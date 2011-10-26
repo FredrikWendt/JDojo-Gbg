@@ -7,3 +7,4 @@ http://meetup.com/jdojo-gbg
 kata-web-auth-1 - produced sometime to explain the overall "goal" of this kata
 kata-web-auth-2 - a practice run without a mocking framework
 kata-web-auth-3 - an early draft/variant of this kata
+kata-web-auth-4 - a practice run with Mockito
