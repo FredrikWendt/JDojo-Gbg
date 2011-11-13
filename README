@@ -4,6 +4,7 @@ It's not production code - it's practice code.
 
 http://meetup.com/jdojo-gbg
 
+kata-web-auth-clean - an empty project meant to cut the time needed to get started
 kata-web-auth-1 - produced sometime to explain the overall "goal" of this kata
 kata-web-auth-2 - a practice run without a mocking framework
 kata-web-auth-3 - an early draft/variant of this kata
