@@ -1,5 +1,6 @@
 package dojo;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -12,9 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -67,7 +66,7 @@ public class FilterTest {
 
 		testee.doFilter(request, response, filterChain);
 
-		verify(response).addCookie(argThat(hasCookieValue("SSOToken")));
+		verify(response).addCookie(argThat(Matchers.<Cookie>hasProperty("name", equalTo("SSOToken"))));
 		verify(httpSession).setAttribute(eq("SSOToken"), anyString());
 		verifyLoggedIn();
 	}
@@ -81,23 +80,4 @@ public class FilterTest {
 		verify(filterChain).doFilter(request, response);
 		verify(response, never()).setStatus(401);
 	}
-	
-	private static Matcher<Cookie> hasCookieValue(final String name) {
-		return new BaseMatcher<Cookie>() {
-
-			@Override
-			public boolean matches(Object arg0) {
-				return (arg0 instanceof Cookie) &&
-					name.equals(((Cookie)arg0).getName());
-				}
-
-			@Override
-			public void describeTo(Description arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-	       
-		};
-	}
-	
 }
