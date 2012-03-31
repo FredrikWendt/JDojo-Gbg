@@ -1,9 +1,9 @@
 package se.jdojo.gbg;
 
 /**
- * Version 0.1 of a single sign on registry.
+ * Version 0.1 of a single sign on service.
  */
-public interface SingleSignOnRegistry {
+public interface SingleSignOnService {
 
 	/**
 	 * Returns a token for a new session, for the specified user.
