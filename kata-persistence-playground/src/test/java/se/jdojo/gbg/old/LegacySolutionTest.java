@@ -91,38 +91,87 @@ public class LegacySolutionTest extends SqlDatabaseBase {
 	@Test
 	public void load_By_Date_After_1981() throws Exception {
 		final Date pointInTime = dateUtil.asDate("1981-01-01");
-		List<Animal> result = testee.loadByDateAfterIncluding(pointInTime);
 		
+		List<Animal> result = testee.loadByDateAfterIncluding(pointInTime);
+
 		assertEquals(2, result.size());
 		for (Animal a : result) {
 			assertAtOrAfter(pointInTime, (Date) a.get("dob"));
 		}
+		verifyAnimalObjectIntegrity(result);
 	}
-	
+
 	@Test
 	public void load_By_Date_After_1970() throws Exception {
 		final Date pointInTime = dateUtil.asDate("1970-01-01");
-		List<Animal> result = testee.loadByDateAfterIncluding(pointInTime);
 		
+		List<Animal> result = testee.loadByDateAfterIncluding(pointInTime);
+
 		assertEquals(6, result.size());
 		for (Animal a : result) {
 			assertAtOrAfter(pointInTime, (Date) a.get("dob"));
 		}
+		verifyAnimalObjectIntegrity(result);
 	}
-	
+
 	@Test
 	public void load_By_Date_Before_1981() throws Exception {
 		Date pointInTime = dateUtil.asDate("1981-01-01");
-		List<Animal> result = testee.loadByDateBeforeIncluding(pointInTime);
 		
+		List<Animal> result = testee.loadByDateBeforeIncluding(pointInTime);
+
 		assertEquals(5, result.size());
 		for (Animal a : result) {
 			assertAtOrBefore(pointInTime, (Date) a.get("dob"));
 		}
+		verifyAnimalObjectIntegrity(result);
 	}
-	
 
-	// FIXME: test load by date between
+	@Test
+	public void load_By_Date_Between_Two_Dates() throws Exception {
+		Date from = dateUtil.asDate("1980-11-01");
+		Date until = dateUtil.asDate("1980-12-31");
+		
+		List<Animal> result = testee.loadByDateBetweenIncluding(from, until);
+		
+		assertEquals(2, result.size());
+		verifyAnimalObjectIntegrity(result);
+	}
+
+	@Test
+	public void load_By_Date_Between_Two_Other_Dates() throws Exception {
+		Date from = dateUtil.asDate("1980-10-31");
+		Date until = dateUtil.asDate("1981-01-01");
+		
+		List<Animal> result = testee.loadByDateBetweenIncluding(from, until);
+
+		assertEquals(4, result.size());
+		verifyAnimalObjectIntegrity(result);
+	}
+
+	@Test
+	public void load_By_Date_Must_Be_Passed_Arguments_In_Cronological_Order() throws Exception {
+		Date from = dateUtil.asDate("1980-01-01");
+		Date until = dateUtil.asDate("1970-01-01");
+
+		try {
+			testee.loadByDateBetweenIncluding(from, until);
+			fail("Passing arguments in non-cronological order is illegal");
+		} catch (IllegalArgumentException e) {
+			assertTrue(e.getMessage().contains("order"));
+		}
+	}
+
+	@Test
+	public void load_By_Date_Between_Can_Be_Given_Two_Identical_Arguments() throws Exception {
+		Date date = dateUtil.asDate("1980-10-15");
+		
+		List<Animal> result = testee.loadByDateBetweenIncluding(date, date);
+		
+		assertEquals("adam", result.iterator().next().get("name"));
+		assertEquals(1, result.size());
+	}
+
 	// FIXME: test load by species, name, date
 
 	// TODO: negative path tests ...
@@ -133,6 +182,7 @@ public class LegacySolutionTest extends SqlDatabaseBase {
 			fail("" + actual + " is not at or before " + expected);
 		}
 	}
+
 	private void assertAtOrAfter(Date expected, Date actual) {
 		if (actual.getTime() < expected.getTime()) {
 			fail("" + actual + " is not at or after " + expected);

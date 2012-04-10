@@ -109,4 +109,21 @@ public class AnimalDAO {
 		return result;
 	}
 
+	public List<Animal> loadByDateBetweenIncluding(Date from, Date until) {
+		if (from.after(until)) {
+			throw new IllegalArgumentException("Second date is before first in time - arguments passed in wrong order?");
+		}
+		
+		List<Animal> result = new ArrayList<Animal>();
+		List<Animal> allAnimals = loadAllAnimals();
+		for (Animal animal : allAnimals) {
+			Date dateOfBirth = (Date) animal.get("dob");
+			if (dateOfBirth.before(from) || dateOfBirth.after(until)) {
+				continue;
+			}
+			result.add(animal);
+		}
+		return result;
+	}
+
 }
