@@ -1,8 +1,11 @@
 package se.jdojo.gbg.old;
 
+import static se.jdojo.gbg.old.ContainsAnimals.*;
 import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Date;
 import java.util.List;
@@ -91,7 +94,7 @@ public class LegacySolutionTest extends SqlDatabaseBase {
 	@Test
 	public void load_By_Date_After_1981() throws Exception {
 		final Date pointInTime = dateUtil.asDate("1981-01-01");
-		
+
 		List<Animal> result = testee.loadByDateAfterIncluding(pointInTime);
 
 		assertEquals(2, result.size());
@@ -104,7 +107,7 @@ public class LegacySolutionTest extends SqlDatabaseBase {
 	@Test
 	public void load_By_Date_After_1970() throws Exception {
 		final Date pointInTime = dateUtil.asDate("1970-01-01");
-		
+
 		List<Animal> result = testee.loadByDateAfterIncluding(pointInTime);
 
 		assertEquals(6, result.size());
@@ -117,7 +120,7 @@ public class LegacySolutionTest extends SqlDatabaseBase {
 	@Test
 	public void load_By_Date_Before_1981() throws Exception {
 		Date pointInTime = dateUtil.asDate("1981-01-01");
-		
+
 		List<Animal> result = testee.loadByDateBeforeIncluding(pointInTime);
 
 		assertEquals(5, result.size());
@@ -131,9 +134,9 @@ public class LegacySolutionTest extends SqlDatabaseBase {
 	public void load_By_Date_Between_Two_Dates() throws Exception {
 		Date from = dateUtil.asDate("1980-11-01");
 		Date until = dateUtil.asDate("1980-12-31");
-		
+
 		List<Animal> result = testee.loadByDateBetweenIncluding(from, until);
-		
+
 		assertEquals(2, result.size());
 		verifyAnimalObjectIntegrity(result);
 	}
@@ -142,7 +145,7 @@ public class LegacySolutionTest extends SqlDatabaseBase {
 	public void load_By_Date_Between_Two_Other_Dates() throws Exception {
 		Date from = dateUtil.asDate("1980-10-31");
 		Date until = dateUtil.asDate("1981-01-01");
-		
+
 		List<Animal> result = testee.loadByDateBetweenIncluding(from, until);
 
 		assertEquals(4, result.size());
@@ -165,14 +168,34 @@ public class LegacySolutionTest extends SqlDatabaseBase {
 	@Test
 	public void load_By_Date_Between_Can_Be_Given_Two_Identical_Arguments() throws Exception {
 		Date date = dateUtil.asDate("1980-10-15");
-		
+
 		List<Animal> result = testee.loadByDateBetweenIncluding(date, date);
-		
+
 		assertEquals("adam", result.iterator().next().get("name"));
 		assertEquals(1, result.size());
 	}
 
-	// FIXME: test load by species, name, date
+	@Test
+	public void load_By_Species_And_Date() throws Exception {
+		List<Animal> result = testee.loadBySpeciesAndDateAfterIncluding("fly", dateUtil.asDate("1981-01-01"));
+
+		assertEquals(1, result.size());
+		assertEquals("fredrik", result.iterator().next().get("name"));
+	}
+	
+	@Test
+	public void load_By_Species_And_Name_Pattern() throws Exception {
+		List<Animal> result = testee.loadBySpeciesAndNamePattern("fly", "e");
+		
+		assertThat(result, containsAnimals("evan", "fredrik"));
+	}
+
+	@Test
+	public void load_By_Species_And_Name_Pattern_Two() throws Exception {
+		List<Animal> result = testee.loadBySpeciesAndNamePattern("fly", "f");
+		
+		assertThat(result, containsAnimals("fredrik"));
+	}
 
 	// TODO: negative path tests ...
 	// TODO: rewrite matching with prettier Hamcrest matcHers

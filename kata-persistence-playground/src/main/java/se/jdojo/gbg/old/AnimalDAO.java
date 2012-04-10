@@ -126,4 +126,21 @@ public class AnimalDAO {
 		return result;
 	}
 
+	public List<Animal> loadBySpeciesAndDateAfterIncluding(String species, Date bornAtOrAfter) {
+		List<Animal> bySpecies = loadBySpecies(species);
+		List<Animal> byDate = loadByDateAfterIncluding(bornAtOrAfter);
+		List<Animal> result = new ArrayList<Animal>(bySpecies);
+		result.retainAll(byDate);
+		return result;
+	}
+
+	public List<Animal> loadBySpeciesAndNamePattern(String string, String string2) {
+		// TODO: both can be expressed as single SQL statement
+		List<Animal> bySpecies = loadBySpecies(string);
+		List<Animal> byName = loadByNamesMatching(string2);
+		List<Animal> result = new ArrayList<Animal>(bySpecies);
+		result.retainAll(byName);
+		return result;
+	}
+
 }
